@@ -2,10 +2,19 @@
 
 static void activate(GtkApplication* app, gpointer user_data) {
   GtkWidget *window;
+  GtkWidget *grid;
 
+  // Create a new window
   window = gtk_application_window_new(app);
   gtk_window_set_title(GTK_WINDOW(window), "KiwiLab");
   gtk_window_set_default_size(GTK_WINDOW(window), 800, 800);
+
+  // Initialize the grid
+  grid = gtk_grid_new();
+  // Put the grid in the window
+  gtk_window_set_child(GTK_WINDOW(window), grid);
+
+  // Show the window
   gtk_widget_show(window);
 }
 

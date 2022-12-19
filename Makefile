@@ -1,7 +1,9 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -g
-PACKAGE=$(shell pkg-config --cflags gtk4)
-LDLIBS=$(shell pkg-config --libs gtk4)
+
+FFMPEG_LIBS= libavformat libavfilter libavcodec
+PACKAGE=$(shell pkg-config --cflags gtk4 $(FFMPEG_LIBS))
+LDLIBS=$(shell pkg-config --libs gtk4 $(FFMPEG_LIBS))
 
 SRC_DIR=src/
 OBJ_DIR=obj/
