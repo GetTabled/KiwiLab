@@ -1,15 +1,26 @@
 #include <gtk/gtk.h>
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
 
-static void activate(GtkApplication* app, gpointer user_data) {
+static void importFile(GtkButton *source, gpointer user_data) {
+  // TODO::Open FileChooserDialog
+  g_print("Importing file");
+}
+
+static void activate(GtkApplication *app, gpointer user_data) {
   GtkWidget *window;
   GtkWidget *windowDivideContainer;
 
   GtkWidget *topWindowContainer;
+
   GtkWidget *tabbedPanelGrandParentContainer;
   GtkWidget *tabbedPanelParentContainer;
   GtkWidget *tabbedPanelParent;
   GtkWidget *tabbedPanelSwitcher;
+
   GtkWidget *projectPanel;
+  GtkWidget *importButton;
+
   GtkWidget *propertiesPanel;
 
   GtkWidget *compositionPanel;
@@ -36,6 +47,10 @@ static void activate(GtkApplication* app, gpointer user_data) {
   tabbedPanelSwitcher = gtk_stack_switcher_new();
 
   projectPanel = gtk_frame_new("projectPanel");
+  importButton = gtk_button_new_with_label("Import");
+  g_signal_connect(GTK_BUTTON(importButton), "clicked", G_CALLBACK(importFile), NULL);
+  gtk_frame_set_child(GTK_FRAME(projectPanel), importButton);
+
   propertiesPanel = gtk_frame_new("propertiesPanel");
 
   // Add childs to the Stack(tabbedPanelParent)
@@ -77,10 +92,30 @@ static void activate(GtkApplication* app, gpointer user_data) {
   gtk_widget_show(window);
 }
 
+static int get_video(const char *filePath) {
+  AVFormatContext *formatContext = avformat_alloc_context();
+
+  if(!formatContext) {
+      return -1;
+  }
+
+  if(avformat_open_input(&formatContext, filePath, NULL, NULL)) {
+    return -1;
+  }
+
+  if(avformat_find_stream_info(formatContext, NULL) < 0) {
+    return -1;
+  }
+
+  AVCodec *codec = NULL;
+  AVCodecParameters *codecParameters =  NULL;
+}
+
 int main(int argc, char **argv) {
   GtkApplication *app;
   int status;
 
+  // GTK application initialization
   app = gtk_application_new("table.kiwilab", G_APPLICATION_DEFAULT_FLAGS);
   g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
   status = g_application_run(G_APPLICATION(app), argc, argv);
