@@ -13,6 +13,7 @@ static void activate(GtkApplication* app, gpointer user_data) {
   GtkWidget *propertiesPanel;
 
   GtkWidget *compositionPanel;
+  GtkWidget *frameDisplay;
 
   GtkWidget *timelinePanel;
 
@@ -53,6 +54,11 @@ static void activate(GtkApplication* app, gpointer user_data) {
   // [ ] [x]
   // [     ]
   compositionPanel = gtk_frame_new("compositionPanel");
+  frameDisplay = gtk_drawing_area_new();
+  gtk_drawing_area_set_content_height(GTK_DRAWING_AREA(frameDisplay), 200);
+  gtk_drawing_area_set_content_width(GTK_DRAWING_AREA(frameDisplay), 200);
+  //gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(frameDisplay), NULL, NULL, NULL);
+  gtk_frame_set_child(GTK_FRAME(compositionPanel), frameDisplay);
   // Place the compositionPanel(Frame) in the topWindowContainer(Pane)
   gtk_paned_set_end_child(GTK_PANED(topWindowContainer), compositionPanel);
 
