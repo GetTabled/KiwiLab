@@ -26,7 +26,7 @@ static void activate(GtkApplication* app, gpointer user_data) {
   
   // [x] [ ]
   // [     ]
-  topWindowContainer = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+  topWindowContainer = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
   tabbedPanelGrandParentContainer =  gtk_frame_new(NULL);
   tabbedPanelParentContainer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
   gtk_frame_set_child(GTK_FRAME(tabbedPanelGrandParentContainer), tabbedPanelParentContainer);
@@ -47,14 +47,14 @@ static void activate(GtkApplication* app, gpointer user_data) {
   // Place the tabbedPanelParent(Stack) to the tabbedPanelParentContainer(Box)
   gtk_box_append(GTK_BOX(tabbedPanelParentContainer), tabbedPanelSwitcher);
   gtk_box_append(GTK_BOX(tabbedPanelParentContainer), tabbedPanelParent);
-  // Place the tabbedPanelParentContainer(Frame) in the topWindowContainer(Box)
-  gtk_box_append(GTK_BOX(topWindowContainer), tabbedPanelGrandParentContainer);
+  // Place the tabbedPanelParentContainer(Frame) in the topWindowContainer(Pane)
+  gtk_paned_set_start_child(GTK_PANED(topWindowContainer), tabbedPanelGrandParentContainer);
 
   // [ ] [x]
   // [     ]
   compositionPanel = gtk_frame_new("compositionPanel");
-  // Place the compositionPanel(Frame) in the topWindowContainer(Box)
-  gtk_box_append(GTK_BOX(topWindowContainer), compositionPanel);
+  // Place the compositionPanel(Frame) in the topWindowContainer(Pane)
+  gtk_paned_set_end_child(GTK_PANED(topWindowContainer), compositionPanel);
 
   // [ ] [ ]
   // [ x x ]
