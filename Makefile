@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -g
 
-FFMPEG_LIBS=libavformat libavfilter libavcodec
+FFMPEG_LIBS= libavformat libavfilter libavcodec
 PACKAGE=$(shell pkg-config --cflags gtk4 $(FFMPEG_LIBS))
 LDLIBS=$(shell pkg-config --libs gtk4 $(FFMPEG_LIBS))
 
