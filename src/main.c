@@ -2,30 +2,35 @@
 
 static void activate(GtkApplication* app, gpointer user_data) {
   GtkWidget *window;
+  GtkWidget *windowDivideContainer;
+
   GtkWidget *grid;
-  GtkWidget *menuBar;
-  GtkWidget *fileMenu;
+  GtkWidget *tabbedPanelParentContainer;
   GtkWidget *tabbedPanelParent;
+  GtkWidget *tabbedPanelSwitcher;
   GtkWidget *projectPanel;
   GtkWidget *propertiesPanel;
-  GtkWidget *compositionPanel;
-  GtkWidget *timelinePanel;
-  GtkWidget *label;
 
+  GtkWidget *compositionPanel;
+
+  GtkWidget *timelinePanel;
+
+  GtkWidget *label;
 
   // Create a new window
   window = gtk_application_window_new(app);
   gtk_window_set_title(GTK_WINDOW(window), "KiwiLab");
   gtk_window_set_default_size(GTK_WINDOW(window), 800, 800);
 
-  // Initialize the grid
+  windowDivideContainer = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+  
+  // [x] [ ]
+  // [     ]
   grid = gtk_grid_new();
-  // Put the grid in the window
-  gtk_window_set_child(GTK_WINDOW(window), grid);
-
+  tabbedPanelParentContainer = gtk_frame_new("tabbedPanelParentContainer");
+  
   tabbedPanelParent = gtk_stack_new();
-  gtk_grid_attach(GTK_GRID(grid), tabbedPanelParent, 0, 0, 1, 1);
-  GtkWidget *tabbedPanelSwitcher = gtk_stack_switcher_new();
+  tabbedPanelSwitcher = gtk_stack_switcher_new();
 
   projectPanel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 300);
   label = gtk_label_new("Project panel");
@@ -39,16 +44,25 @@ static void activate(GtkApplication* app, gpointer user_data) {
   gtk_stack_add_child(GTK_STACK(tabbedPanelParent), propertiesPanel);
 
   gtk_stack_switcher_set_stack(GTK_STACK_SWITCHER(tabbedPanelSwitcher), GTK_STACK(tabbedPanelParent));
+  
+  gtk_frame_set_child(GTK_FRAME(tabbedPanelParentContainer), tabbedPanelParent);
+  gtk_grid_attach(GTK_GRID(grid), tabbedPanelParentContainer, 0, 0, 1, 1);
 
-  compositionPanel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 500);
-  label = gtk_label_new("Composition panel");
-  gtk_box_prepend(GTK_BOX(compositionPanel), label);
+  // [ ] [x]
+  // [     ]
+  compositionPanel = gtk_frame_new("compositionPanel");
   gtk_grid_attach(GTK_GRID(grid), compositionPanel, 1, 0, 1, 1);
 
-  timelinePanel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 800);
-  label = gtk_label_new("Timeline panel");
-  gtk_box_prepend(GTK_BOX(timelinePanel), label);
-  gtk_grid_attach(GTK_GRID(grid), timelinePanel, 0, 1, 1, 2);
+  // [ ] [ ]
+  // [ x x ]
+  timelinePanel = gtk_frame_new("timelinePanel");
+
+  // Set windowDivideContainer children
+  gtk_paned_set_start_child(GTK_PANED(windowDivideContainer), grid);
+  gtk_paned_set_end_child(GTK_PANED(windowDivideContainer), timelinePanel);
+
+  // Put the windowDivideContainer in the window
+  gtk_window_set_child(GTK_WINDOW(window), windowDivideContainer);
 
   // Show the window
   gtk_widget_show(window);
