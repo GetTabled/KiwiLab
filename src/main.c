@@ -4,7 +4,8 @@ static void activate(GtkApplication* app, gpointer user_data) {
   GtkWidget *window;
   GtkWidget *windowDivideContainer;
 
-  GtkWidget *grid;
+  GtkWidget *topWindowContainer;
+  GtkWidget *tabbedPanelGrandParentContainer;
   GtkWidget *tabbedPanelParentContainer;
   GtkWidget *tabbedPanelParent;
   GtkWidget *tabbedPanelSwitcher;
@@ -15,7 +16,6 @@ static void activate(GtkApplication* app, gpointer user_data) {
 
   GtkWidget *timelinePanel;
 
-  GtkWidget *label;
 
   // Create a new window
   window = gtk_application_window_new(app);
@@ -26,39 +26,42 @@ static void activate(GtkApplication* app, gpointer user_data) {
   
   // [x] [ ]
   // [     ]
-  grid = gtk_grid_new();
-  tabbedPanelParentContainer = gtk_frame_new("tabbedPanelParentContainer");
+  topWindowContainer = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+  tabbedPanelGrandParentContainer =  gtk_frame_new(NULL);
+  tabbedPanelParentContainer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+  gtk_frame_set_child(GTK_FRAME(tabbedPanelGrandParentContainer), tabbedPanelParentContainer);
   
   tabbedPanelParent = gtk_stack_new();
   tabbedPanelSwitcher = gtk_stack_switcher_new();
 
-  projectPanel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 300);
-  label = gtk_label_new("Project panel");
-  gtk_box_prepend(GTK_BOX(projectPanel), label);
+  projectPanel = gtk_frame_new("projectPanel");
+  propertiesPanel = gtk_frame_new("propertiesPanel");
 
-  propertiesPanel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 300);
-  label = gtk_label_new("Properties panel");
-  gtk_box_prepend(GTK_BOX(propertiesPanel), label);
+  // Add childs to the Stack(tabbedPanelParent)
+  gtk_stack_add_titled(GTK_STACK(tabbedPanelParent), projectPanel, "projectPanel", "Project");
+  gtk_stack_add_titled(GTK_STACK(tabbedPanelParent), propertiesPanel, "propertiesPanel", "Properties");
 
-  gtk_stack_add_child(GTK_STACK(tabbedPanelParent), projectPanel);
-  gtk_stack_add_child(GTK_STACK(tabbedPanelParent), propertiesPanel);
-
+  // Set the Stack to use for the StackSwitcher
   gtk_stack_switcher_set_stack(GTK_STACK_SWITCHER(tabbedPanelSwitcher), GTK_STACK(tabbedPanelParent));
   
-  gtk_frame_set_child(GTK_FRAME(tabbedPanelParentContainer), tabbedPanelParent);
-  gtk_grid_attach(GTK_GRID(grid), tabbedPanelParentContainer, 0, 0, 1, 1);
+  // Place the tabbedPanelParent(Stack) to the tabbedPanelParentContainer(Box)
+  gtk_box_append(GTK_BOX(tabbedPanelParentContainer), tabbedPanelSwitcher);
+  gtk_box_append(GTK_BOX(tabbedPanelParentContainer), tabbedPanelParent);
+  // Place the tabbedPanelParentContainer(Frame) in the topWindowContainer(Box)
+  gtk_box_append(GTK_BOX(topWindowContainer), tabbedPanelGrandParentContainer);
 
   // [ ] [x]
   // [     ]
   compositionPanel = gtk_frame_new("compositionPanel");
-  gtk_grid_attach(GTK_GRID(grid), compositionPanel, 1, 0, 1, 1);
+  // Place the compositionPanel(Frame) in the topWindowContainer(Box)
+  gtk_box_append(GTK_BOX(topWindowContainer), compositionPanel);
 
   // [ ] [ ]
   // [ x x ]
   timelinePanel = gtk_frame_new("timelinePanel");
 
   // Set windowDivideContainer children
-  gtk_paned_set_start_child(GTK_PANED(windowDivideContainer), grid);
+  gtk_paned_set_start_child(GTK_PANED(windowDivideContainer), topWindowContainer);
   gtk_paned_set_end_child(GTK_PANED(windowDivideContainer), timelinePanel);
 
   // Put the windowDivideContainer in the window
