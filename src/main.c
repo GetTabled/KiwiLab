@@ -40,7 +40,7 @@ struct kwlb_Widgets {
   GtkWidget *propertiesPanel; // Gtk.Frame
 
   GtkWidget *compositionPanel; // Gtk.Frame
-  GtkWidget *frameDisplay; // Gtk.MediaFile
+  GtkMediaStream *frameDisplay; // Gtk.MediaFile
 
   GtkWidget *timelinePanel; // Gtk.Frame
 };
@@ -85,11 +85,6 @@ int main(int argc, char **argv) {
   struct kwlb_Widgets widgets;
   int status;
 
-  // GTK application initialization
-  app = gtk_application_new("table.kiwilab", G_APPLICATION_DEFAULT_FLAGS);
-  g_signal_connect(app, "activate", G_CALLBACK(activate), &widgets);
-  // GTK application initialization::END
-
   // Initialize widgets
   widgets = (struct kwlb_Widgets) { 
     .windowDivideContainer = gtk_paned_new(GTK_ORIENTATION_VERTICAL),
@@ -105,7 +100,7 @@ int main(int argc, char **argv) {
     .frameDisplay = gtk_media_file_new(),
     .timelinePanel = gtk_frame_new("timelinePanel")
   };
-
+/*
   // Top left area
   // [x] [ ]
   // [     ]
@@ -161,8 +156,11 @@ int main(int argc, char **argv) {
   gtk_paned_set_start_child(GTK_PANED(widgets.windowDivideContainer), widgets.topWindowDivider);
   gtk_paned_set_end_child(GTK_PANED(widgets.windowDivideContainer), widgets.timelinePanel);
   // Initialize widgets::END
+  */
 
-
+  // GTK application initialization
+  app = gtk_application_new("table.kiwilab", G_APPLICATION_DEFAULT_FLAGS);
+  g_signal_connect(app, "activate", G_CALLBACK(activate), &widgets);
   status = g_application_run(G_APPLICATION(app), argc, argv);
   g_object_unref(app);
 
